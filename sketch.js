@@ -53,6 +53,7 @@ function draw() {
     textAlign(CENTER, CENTER);
     textSize(24);
     text('Click or press any key to start', width / 2, height / 2);
+    text("Press A S D F G keys to hit notes!", width / 2, height / 2 + 40);
     textAlign(LEFT);
     return;
   }
