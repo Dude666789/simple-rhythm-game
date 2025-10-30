@@ -14,6 +14,7 @@ let HitY = 35;
 let NoteSpeed = 5;
 let NoteSize = 55;
 let Status = "";
+let gameStarted = false;
 
 // lane setup
 let lanes = [
@@ -30,7 +31,6 @@ function preload() {
 
 function setup() {
   createCanvas(800, 600);
-  Music.play();
   textFont('monospace');
 }
 
@@ -44,6 +44,19 @@ function draw() {
   }
 
   // spawn notes according to chart timing
+  // don't run the game until the user starts it (required for audio on many browsers)
+  if (!gameStarted) {
+    // show a simple overlay prompting the user to start
+    fill(0, 0, 0, 180);
+    rect(0, 0, width, height);
+    fill(255);
+    textAlign(CENTER, CENTER);
+    textSize(24);
+    text('Click or press any key to start', width / 2, height / 2);
+    textAlign(LEFT);
+    return;
+  }
+
   let currentTime = Music.currentTime();
   if (currentNoteIndex < Chart.length && currentTime >= Chart[currentNoteIndex].time) {
     spawnNotes(Chart[currentNoteIndex].key);
@@ -84,7 +97,7 @@ function draw() {
     text("Game Over!", width / 2, height / 2);
     textSize(30);
     text(`Final Score: ${Score}`, width / 2, height / 2 + 50);
-    if (Score => 91) {
+    if (Score >= 91) {
       text("Perfect Score! Amazing!", width / 2, height / 2 + 90);
     }
     
@@ -95,6 +108,16 @@ function draw() {
 }
 
 function keyPressed() {
+  // start the game (and audio) on first key press
+  if (!gameStarted) {
+    // some browsers require a user gesture to resume audio
+    if (typeof userStartAudio === 'function') {
+      userStartAudio();
+    }
+    if (Music && Music.play) Music.play();
+    gameStarted = true;
+    return;
+  }
   let k = key.toLowerCase();
   for (let i = activeNotes.length - 1; i >= 0; i--) {
     let note = activeNotes[i];
@@ -121,5 +144,16 @@ function spawnNotes(keys) {
         color: lane.color
       });
     }
+  }
+}
+
+function mousePressed() {
+  // also allow starting the game via mouse click
+  if (!gameStarted) {
+    if (typeof userStartAudio === 'function') {
+      userStartAudio();
+    }
+    if (Music && Music.play) Music.play();
+    gameStarted = true;
   }
 }
