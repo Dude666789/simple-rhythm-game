@@ -15,7 +15,9 @@ let NoteSpeed = 5;
 let NoteSize = 55;
 let Status = "";
 let gameStarted = false;
-
+let currentNoteCounter = 0;
+let currentCombo = 0;
+let highestCombo = 0;
 // lane setup
 let lanes = [
   { key: 'a', x: 433, color: 'rgb(91,206,250)' },
@@ -76,6 +78,8 @@ function draw() {
       activeNotes.splice(i, 1);
       Score = max(0, Score - 1);
       Status = "Miss!";
+      currentNoteCounter++;
+      currentCombo = 0;
     }
     if (NoteSize > 65) {
       NoteSize = 55;
@@ -98,14 +102,21 @@ function draw() {
     text("Game Over!", width / 2, height / 2);
     textSize(30);
     text(`Final Score: ${Score}`, width / 2, height / 2 + 50);
-    if (Score >= 91) {
+    if (Score >= Chart.length) {
       text("Perfect Score! Amazing!", width / 2, height / 2 + 90);
     }
     
   }
+  if (Score >= currentNoteCounter) {
+      Status = "Perfect so far!";
+  }
+  if (currentCombo > highestCombo) {
+      highestCombo = currentCombo;
+  }
 
-  textAlign(LEFT);
   text(Status, 20, 60);
+  text(`Combo: ${currentCombo}`, 20, 90);
+  text(`Highest Combo: ${highestCombo}`, 20, 120);
 }
 
 function keyPressed() {
@@ -127,11 +138,15 @@ function keyPressed() {
       activeNotes.splice(i, 1);
       NoteSize += 10;
       Status = "Great!";
+      currentNoteCounter++;
+      currentCombo ++;
       return;
     }
   }
   Score = max(0, Score - 2); // penalty for missing
+
   Status = "Woops";
+  currentCombo = 0;
 }
 
 function spawnNotes(keys) {
