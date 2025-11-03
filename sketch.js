@@ -18,17 +18,18 @@ let gameStarted = false;
 let currentNoteCounter = 0;
 let currentCombo = 0;
 let highestCombo = 0;
+let NoteOffset = 1.2255; // seconds
 // lane setup
 let lanes = [
-  { key: 'a', x: 433, color: 'rgb(91,206,250)' },
-  { key: 's', x: 508, color: 'rgb(245,169,184)' },
-  { key: 'd', x: 583, color: 'rgb(255,255,255)' },
-  { key: 'f', x: 658, color: 'rgb(245,169,184)' },
-  { key: 'g', x: 733, color: 'rgb(91,206,250)' }
+  { key: 'a', x: 433, color: 'rgb(255,33,140)' },
+  { key: 's', x: 508, color: 'rgb(245,216,0)' },
+  { key: 'd', x: 583, color: 'rgb(33,177,255)' },
+  { key: 'f', x: 658, color: 'rgb(155,79,150)' },
+  { key: 'g', x: 733, color: 'rgb(0,56,168)' }
 ];
 
 function preload() {
-  Music = loadSound('assets/TheDivineComedy.mp3');
+  Music = loadSound('assets/song.wav');
 }
 
 function setup() {
@@ -60,7 +61,7 @@ function draw() {
     return;
   }
 
-  let currentTime = Music.currentTime();
+  let currentTime = Music.currentTime() + NoteOffset;
   if (currentNoteIndex < Chart.length && currentTime >= Chart[currentNoteIndex].time) {
     spawnNotes(Chart[currentNoteIndex].key);
     currentNoteIndex++;
@@ -91,7 +92,7 @@ function draw() {
   textSize(25);
   text(`Score: ${Score}`, 20, 30);
   text(`Time: ${currentTime.toFixed(2)}`, 500, 590);
-  text("Song: The Divine Comedy - Frums", 10, 590);
+  text("Song: Song - By me", 10, 590);
 
   // Game Over
   if (!Music.isPlaying()) {
@@ -113,7 +114,7 @@ function draw() {
   if (currentCombo > highestCombo) {
       highestCombo = currentCombo;
   }
-
+  textSize(25);
   text(Status, 20, 60);
   text(`Combo: ${currentCombo}`, 20, 90);
   text(`Highest Combo: ${highestCombo}`, 20, 120);
